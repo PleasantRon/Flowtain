@@ -11,6 +11,7 @@ import { useTaskWorkspace } from "../context/TaskContext.jsx";
 import { usePoints } from "./usePoints.jsx";
 import { useFlowFeedback } from "./useFlowFeedback.jsx";
 import { MESSAGES } from "../utils/messages.js";
+import { disposeSounds, playBell, playReset, playStart, startAmbient, stopAmbient } from "../utils/sounds.js";
 import {
   alignTimerToSettings,
   createInitialTimer,
@@ -21,34 +22,12 @@ import {
 
 const TimerContext = createContext(null);
 
-function playChime(enabled) {
-  if (!enabled) return;
-  try {
-    const ctx = new AudioContext();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.frequency.value = 880;
-    g.gain.value = 0.04;
-    o.start();
-    setTimeout(() => {
-      o.stop();
-      ctx.close();
-    }, 160);
-  } catch {
-    /* ignore */
-  }
-}
-
 export function TimerProvider({ children }) {
   const { settings, appendFocusSession, resetClockSignal } = useTaskWorkspace();
   const { awardFocusSession } = usePoints();
   const { push } = useFlowFeedback();
 
   const [timer, setTimer] = useState(() => createInitialTimer(settings));
-  const prevModeRef = useRef(timer.mode);
-  const bootRef = useRef(true);
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
 
@@ -64,21 +43,15 @@ export function TimerProvider({ children }) {
   }, [resetClockSignal]);
 
   useEffect(() => {
-    if (bootRef.current) {
-      bootRef.current = false;
-      prevModeRef.current = timer.mode;
-      return;
-    }
-    if (prevModeRef.current !== timer.mode) {
-      playChime(soundEnabled);
-    }
-    prevModeRef.current = timer.mode;
-  }, [timer.mode, soundEnabled]);
-
-  useEffect(() => {
     if (!timer.isRunning) return undefined;
     const id = window.setInterval(() => {
       setTimer((prev) => {
+        if (prev.secondsLeft <= 1) {
+          stopAmbient();
+          if (settingsRef.current.soundEnabled) {
+            playBell();
+          }
+        }
         const { timer: next, sessionToAppend } = tickTimer(prev, settingsRef.current);
         if (sessionToAppend) {
           appendFocusSession(sessionToAppend);
@@ -92,25 +65,54 @@ export function TimerProvider({ children }) {
     return () => window.clearInterval(id);
   }, [timer.isRunning, appendFocusSession, awardFocusSession]);
 
+  const isFocusActive = timer.isRunning && timer.mode === "work";
+
+  useEffect(() => {
+    if (soundEnabled && isFocusActive) {
+      startAmbient();
+      return undefined;
+    }
+
+    stopAmbient();
+    return undefined;
+  }, [soundEnabled, isFocusActive]);
+
+  useEffect(() => () => disposeSounds(), []);
+
   const start = useCallback(() => {
     setTimer((prev) => {
       if (prev.isRunning) return prev;
+      if (soundEnabled) {
+        playStart();
+        if (prev.mode === "work") {
+          startAmbient();
+        }
+      }
       if (prev.mode === "work" && prev.secondsLeft === prev.phaseDurationSeconds) {
         push(MESSAGES.sessionStart, "focus");
       }
       return { ...prev, isRunning: true };
     });
-  }, [push]);
+  }, [push, soundEnabled]);
 
   const pause = useCallback(() => {
+    stopAmbient();
     setTimer((prev) => ({ ...prev, isRunning: false }));
   }, []);
 
   const reset = useCallback(() => {
+    if (soundEnabled) {
+      playReset();
+    }
+    stopAmbient();
     setTimer(resetTimer(settingsRef.current));
-  }, []);
+  }, [soundEnabled]);
 
   const skipPhase = useCallback(() => {
+    stopAmbient();
+    if (soundEnabled) {
+      playBell();
+    }
     setTimer((prev) => {
       const { timer: next, sessionToAppend } = finishPhase(prev, settingsRef.current);
       if (sessionToAppend) {
@@ -121,7 +123,7 @@ export function TimerProvider({ children }) {
       }
       return next;
     });
-  }, [settings, appendFocusSession, awardFocusSession]);
+  }, [soundEnabled, appendFocusSession, awardFocusSession]);
 
   const value = useMemo(
     () => ({
@@ -131,9 +133,9 @@ export function TimerProvider({ children }) {
       pause,
       reset,
       skipPhase,
-      isFocusActive: timer.isRunning && timer.mode === "work",
+      isFocusActive,
     }),
-    [timer, settings, start, pause, reset, skipPhase]
+    [timer, settings, start, pause, reset, skipPhase, isFocusActive]
   );
 
   useEffect(() => {

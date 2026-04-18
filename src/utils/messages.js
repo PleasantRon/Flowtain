@@ -2,7 +2,7 @@
 
 export const MESSAGES = {
   loginTitle: "Enter Flowtain",
-  loginSubtitle: "Name and email. No backend yet — your session stays on this device.",
+  loginSubtitle: "Lock In. Level Up. Stay Focused.",
   sessionStart: "You're in Flowtain — focus mode engaged.",
   sessionComplete: "Locked in. Focus level rising. That's Flowtain.",
   pointsSession: "+10 points added",

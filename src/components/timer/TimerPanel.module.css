@@ -1,0 +1,111 @@
+.panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 1.4rem;
+  background: radial-gradient(circle at top, rgb(59 130 246 / 0.08), transparent 52%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.focusPanel::after {
+  opacity: 1;
+}
+
+.phaseMotion {
+  animation: phase-enter 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center bottom;
+}
+
+.clockGlow {
+  position: relative;
+}
+
+.focusGlow {
+  animation: timer-pulse 2.4s ease-in-out infinite;
+  text-shadow: 0 0 18px rgb(59 130 246 / 0.18);
+}
+
+.buttonBase {
+  transform: translateY(0) scale(1);
+  transition:
+    transform 140ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+  will-change: transform;
+}
+
+.buttonBase:hover {
+  transform: translateY(-1px) scale(1.03);
+}
+
+.buttonBase:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.primaryButton {
+  position: relative;
+}
+
+.focusButton {
+  animation: button-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes phase-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes timer-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgb(14 165 233 / 0));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 16px rgb(14 165 233 / 0.22));
+  }
+}
+
+@keyframes button-pulse {
+  0%,
+  100% {
+    box-shadow: 0 12px 28px rgb(59 130 246 / 0.22);
+  }
+
+  50% {
+    box-shadow: 0 16px 34px rgb(59 130 246 / 0.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phaseMotion,
+  .focusGlow,
+  .focusButton {
+    animation: none;
+  }
+
+  .buttonBase {
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+
+  .buttonBase:hover,
+  .buttonBase:active {
+    transform: none;
+  }
+}

@@ -1,10 +1,12 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTimer } from "../../hooks/useTimer.jsx";
 import { formatClock, labelForTimerMode, phaseProgressPercent } from "../../utils/timerFormat.js";
 import { TimerPanel } from "./TimerPanel.jsx";
 
 export function PomodoroTimer({ compact = false }) {
-  const { timer, settings, start, pause, reset, skipPhase } = useTimer();
+  const { timer, settings, start, pause, reset, skipPhase, isFocusActive } = useTimer();
+  const prevModeRef = useRef(timer.mode);
+  const [phaseMotionKey, setPhaseMotionKey] = useState(0);
 
   const modeLabel = useMemo(() => labelForTimerMode(timer.mode), [timer.mode]);
   const clock = useMemo(() => formatClock(timer.secondsLeft), [timer.secondsLeft]);
@@ -13,14 +15,24 @@ export function PomodoroTimer({ compact = false }) {
     [timer.secondsLeft, timer.phaseDurationSeconds]
   );
 
+  useEffect(() => {
+    if (prevModeRef.current !== timer.mode) {
+      setPhaseMotionKey((key) => key + 1);
+      prevModeRef.current = timer.mode;
+    }
+  }, [timer.mode]);
+
   return (
     <TimerPanel
+      mode={timer.mode}
       modeLabel={modeLabel}
       clock={clock}
       compact={compact}
       soundOn={settings.soundEnabled}
       progressPercent={progressPercent}
       isRunning={timer.isRunning}
+      isFocusActive={isFocusActive}
+      phaseMotionKey={phaseMotionKey}
       onStart={start}
       onPause={pause}
       onReset={reset}
@@ -28,3 +40,6 @@ export function PomodoroTimer({ compact = false }) {
     />
   );
 }
+
+
+
