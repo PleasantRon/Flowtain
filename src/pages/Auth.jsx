@@ -33,7 +33,7 @@ export function AuthPage() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.14),transparent_34%),linear-gradient(180deg,#f8fafc,#eef2ff_60%,#f8fafc)] px-4 py-8 sm:px-6">
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-[2rem] bg-white/96 shadow-[0_28px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/80 lg:grid-cols-[1.05fr_0.95fr]">
-          <section className="hidden flex-col justify-between bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.14),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,245,249,0.92))] px-8 py-10 lg:flex">
+          <section className="flex flex-col justify-between gap-8 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.14),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(241,245,249,0.92))] px-6 py-8 sm:px-8 sm:py-10">
             <div>
               <div className="flex items-center gap-3">
                 <span className="h-12 w-12 rounded-2xl bg-gradient-to-br from-brand-600 to-accent-500 shadow-lg shadow-brand-500/25" />
@@ -73,14 +73,7 @@ export function AuthPage() {
           <section className="flex items-center px-5 py-6 sm:px-8 sm:py-10">
             <form onSubmit={onSubmit} className="w-full space-y-5">
               <div>
-                <div className="flex items-center gap-3 lg:hidden">
-                  <span className="h-11 w-11 rounded-2xl bg-gradient-to-br from-brand-600 to-accent-500 shadow-lg shadow-brand-500/25" />
-                  <div>
-                    <h1 className="text-xl font-bold tracking-tight text-slate-900">{BRAND_NAME}</h1>
-                    <p className="text-sm text-slate-500">{MESSAGES.loginSubtitle}</p>
-                  </div>
-                </div>
-                <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-400 lg:mt-0">Sign in</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Sign in</p>
                 <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">{MESSAGES.loginTitle}</h2>
                 <p className="mt-2 text-sm leading-7 text-slate-500">{MESSAGES.loginSubtitle}</p>
               </div>
