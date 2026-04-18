@@ -44,7 +44,7 @@ export function AuthPage() {
               </div>
 
               <div className="mt-12 max-w-md">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Welcome back</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Welcome</p>
                 <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-900">
                   Step in and start the next session.
                 </h1>
