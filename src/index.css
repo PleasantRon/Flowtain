@@ -5,9 +5,14 @@
 @layer base {
   html {
     @apply antialiased;
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
     @apply min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+    background-image:
+      radial-gradient(circle at top, rgba(59, 130, 246, 0.06), transparent 30%),
+      linear-gradient(180deg, rgba(248, 250, 252, 1), rgba(241, 245, 249, 0.95));
   }
 
   body[data-flowtain-focus="on"] {
@@ -16,6 +21,19 @@
 
   body.sidebar-drawer-open {
     @apply overflow-hidden;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
