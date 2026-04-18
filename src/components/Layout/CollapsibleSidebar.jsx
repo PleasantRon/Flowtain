@@ -20,7 +20,7 @@ export function CollapsibleSidebar() {
   return (
     <SidebarDrawerView
       brandName={BRAND_NAME}
-      tagline="Core loop"
+      tagline="Attain flow state"
       navItems={MAIN_NAV_ITEMS}
       onLogout={onLogout}
       navAriaLabel="Main navigation"
