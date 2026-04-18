@@ -4,7 +4,18 @@ import { formatClock, labelForTimerMode, phaseProgressPercent } from "../../util
 import { TimerPanel } from "./TimerPanel.jsx";
 
 export function PomodoroTimer({ compact = false }) {
-  const { timer, settings, start, pause, reset, skipPhase, isFocusActive } = useTimer();
+  const {
+    timer,
+    settings,
+    start,
+    pause,
+    reset,
+    skipPhase,
+    isFocusActive,
+    selectedTask,
+    setSelectedTask,
+    taskOptions,
+  } = useTimer();
   const prevModeRef = useRef(timer.mode);
   const [phaseMotionKey, setPhaseMotionKey] = useState(0);
 
@@ -33,6 +44,9 @@ export function PomodoroTimer({ compact = false }) {
       isRunning={timer.isRunning}
       isFocusActive={isFocusActive}
       phaseMotionKey={phaseMotionKey}
+      selectedTask={selectedTask}
+      taskOptions={taskOptions}
+      onTaskChange={setSelectedTask}
       onStart={start}
       onPause={pause}
       onReset={reset}
@@ -40,6 +54,3 @@ export function PomodoroTimer({ compact = false }) {
     />
   );
 }
-
-
-
